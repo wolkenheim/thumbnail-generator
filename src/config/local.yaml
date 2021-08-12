@@ -1,0 +1,9 @@
+server:
+  port: ":3000"
+localImageDir: "/app/images/"
+minio:
+  url: localhost:9000
+  accessKeyID: thumbnail-gen
+  secretAccessKey: 488c6&caaaAC
+  useSSL: false
+  bucket: images
