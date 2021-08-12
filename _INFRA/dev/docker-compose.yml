@@ -1,0 +1,13 @@
+version: '3.5'
+
+services:
+  thumbnail-generator:
+    build:
+      dockerfile: Dockerfile.local
+      context: ../../
+    volumes:
+      - ../../src:/app/
+    working_dir: /app
+    tty : true
+    ports:
+      - 3000:3000
