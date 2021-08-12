@@ -16,3 +16,4 @@ cd _INFRA/dev && docker-compose up -d
 docker exec -it dev_thumbnail-generator_1 bash
 go run .
 ```
+See [branch](https://github.com/wolkenheim/thumbnail-generator/tree/docker-working)
