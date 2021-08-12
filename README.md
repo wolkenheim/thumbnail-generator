@@ -48,3 +48,13 @@ This took quite a while and quite a bit code changed. It makes sense to see if e
 should still be downloaded and end up in the download-images/originals directory.
 
 See [branch](https://github.com/wolkenheim/thumbnail-generator/tree/facade)
+
+We´re getting closer. Next the wrapper for the thumbnail generator is going to get added. We chose
+(libvips)[https://libvips.github.io/libvips/API/current/]. I won´t go into detail here but reason for
+that was the great research and benchmarking done here (https://github.com/fawick/speedtest-resize)[https://github.
+com/fawick/speedtest-resize]. It is possible to crop files in natively in Go, or use a C library with CGO
+or execute a binary. The latter being the most efficient option. One caveat here: when you want to keep
+the option open to use this as an AWS Lambda function this might not be a good choice. In my own use case
+this was different: we control the underlying container image and hence no problem with dependencies.
+
+I added the next steps. Thumbnails get generated, uploaded to min.io and both local files deleted.

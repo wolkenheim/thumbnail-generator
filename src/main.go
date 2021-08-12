@@ -16,6 +16,7 @@ func main() {
 	minioService.SetClient(minioClient)
 	process.SetMinioService(minioService)
 	process.SetFileService(&service.LocalFileService{})
+	process.SetThumbnailGenerator(&service.VipsThumbnailGenerator{})
 
 	fileName := "livia-sAVFADKItCo-unsplash.jpg"
 
