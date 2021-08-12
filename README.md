@@ -46,3 +46,5 @@ to be defined, struct written and injected from main.go.
 
 This took quite a while and quite a bit code changed. It makes sense to see if everything is working. Now the image
 should still be downloaded and end up in the download-images/originals directory.
+
+See [branch](https://github.com/wolkenheim/thumbnail-generator/tree/facade)
