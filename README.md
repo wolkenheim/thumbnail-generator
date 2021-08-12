@@ -26,5 +26,8 @@ interface or just drop it in the "minio-data/app-images" directory. Your bucket 
 Now your config/local.yaml file should contain the absolute path to the local download directory. This is 
 inside the container so the location is /app/downloaded-images.
 
-Now we are finally ready for a test drive. Let´s download an image from min.io and store it locally.
+Now we are finally ready for a test drive. Let´s download an image from min.io and store it locally. I added a 
+simple fetch operation to main.go.
+Run `go run .`
 
+See [branch](https://github.com/wolkenheim/thumbnail-generator/tree/minio-added)
