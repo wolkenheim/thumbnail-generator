@@ -1,2 +1,4 @@
 .DS_Store
 .idea
+_INFRA/dev/minio-data
+src/downloaded-images/*

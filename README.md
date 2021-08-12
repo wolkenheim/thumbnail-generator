@@ -17,3 +17,14 @@ docker exec -it dev_thumbnail-generator_1 bash
 go run .
 ```
 See [branch](https://github.com/wolkenheim/thumbnail-generator/tree/docker-working)
+
+Next step: Add min.io. The easiest way to get started it checking the (GUI)[http://localhost:8080/login]. Create the 
+bucket 
+"app-images" here. Now at _INFRA/dev/minio-data a new directory should exist. Now get an image. Why not 
+this one from (unsplash)[https://unsplash.com/photos/sAVFADKItCo] Either upload it via the min.io web
+interface or just drop it in the "minio-data/app-images" directory. Your bucket contains one image now.
+Now your config/local.yaml file should contain the absolute path to the local download directory. This is 
+inside the container so the location is /app/downloaded-images.
+
+Now we are finally ready for a test drive. Let´s download an image from min.io and store it locally.
+
