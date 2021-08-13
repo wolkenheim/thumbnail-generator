@@ -1,4 +1,4 @@
-# thumbnail-generator
+# Build a thumbnail-generator with Go, Min.io and Kubernetes
 
 Cloud native service to generate thumbnails from min.io. 
 
@@ -77,4 +77,9 @@ workload is distributed evenly on all pods.
 
 So a web server it is. Let´s build one. What we need is a HandlerFunc that holds all logic which is mainly: parsing and
 validating the JSON request. Call process facade. Send back a response. There needs to be middleware as well to make
-sure the method is POST and the content is JSON.
+sure the method is POST and the content is JSON. All this is basically "how to build a web server from scratch". If 
+you have no clue what is going on here I recommend Alex Edward´s book "Let´s go". This is one of the best introductions
+to web development with Go. The first step is the server in main.go. Here a default router `http.NewServeMux()` is set 
+and routes are added. The application has one route and needs additional liveness and readiness probes for kubernetes.
+The "create" route needs both middlewares we talked about. These are wrappers around the HandlerFunc. 
+

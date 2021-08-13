@@ -1,7 +1,11 @@
 package main
 
 import (
+	"github.com/spf13/viper"
+	"log"
+	"net/http"
 	"wolkenheim.cloud/thumbnail-generator/app"
+	"wolkenheim.cloud/thumbnail-generator/controller"
 	"wolkenheim.cloud/thumbnail-generator/service"
 )
 
@@ -11,6 +15,7 @@ func main() {
 		panic("Minio init failed")
 	}
 
+	a := &app.Application{}
 	minioService := &service.MinioService{}
 	minioService.SetClient(minioClient)
 
@@ -19,9 +24,17 @@ func main() {
 	process.SetFileService(&service.LocalFileService{})
 	process.SetThumbnailGenerator(&service.VipsThumbnailGenerator{})
 
-	fileName := "livia-sAVFADKItCo-unsplash.jpg"
+	c := controller.CreateController{}
+	c.SetApp(&app.Application{})
+	c.SetProcess(process)
+	c.SetValidator(controller.ValidatorFactory())
 
-	process.ProcessImage(fileName)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/readiness", a.Liveness)
+	mux.HandleFunc("/liveness", a.Liveness)
+	mux.Handle("/create", a.IsPostMiddleware(a.IsJSON(http.HandlerFunc(c.Create))))
+
+	log.Fatal(http.ListenAndServe(viper.GetString("server.port"), mux))
 
 }
 

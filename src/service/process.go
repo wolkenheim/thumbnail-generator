@@ -22,7 +22,7 @@ func (p *ProcessMinioFacade) ProcessImage(fileName string) {
 	orgFilePathLocal := p.fileService.GetLocalOriginalPath(fileName)
 	thumbFilePathLocal := p.fileService.GetLocalThumbnailPath(fileName)
 
-	// 2. download image from minio to local
+	// 1. download image from minio to local
 	err = p.imageService.Download(ctx, p.imageService.GetOriginalPath(fileName), orgFilePathLocal)
 	if err != nil {
 		zap.S().Errorw(err.Error(),
@@ -31,7 +31,7 @@ func (p *ProcessMinioFacade) ProcessImage(fileName string) {
 		return
 	}
 
-	// 3. generate thumbnails to local thumbnail dir
+	// 2. generate thumbnails to local thumbnail dir
 	err = p.thumbnailGenerator.Generate(orgFilePathLocal, thumbFilePathLocal)
 	if err != nil {
 		p.fileService.DeleteFile(orgFilePathLocal)
@@ -41,7 +41,7 @@ func (p *ProcessMinioFacade) ProcessImage(fileName string) {
 		return
 	}
 
-	// 4. upload image to minio -> on error delete local images
+	// 3. upload image to minio -> on error delete local images
 	err = p.imageService.Upload(ctx, p.imageService.GetThumbnailPath(fileName), thumbFilePathLocal)
 	if err != nil {
 		p.fileService.DeleteFile(orgFilePathLocal)
@@ -52,7 +52,7 @@ func (p *ProcessMinioFacade) ProcessImage(fileName string) {
 		return
 	}
 
-	// 5. delete local images original / thumbnail
+	// 4. delete local original and thumbnail image
 	p.fileService.DeleteFile(orgFilePathLocal)
 	p.fileService.DeleteFile(thumbFilePathLocal)
 
