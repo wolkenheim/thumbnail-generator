@@ -15,8 +15,6 @@ type ProcessMinioFacade struct {
 	fileService FileService
 }
 
-
-
 func (p *ProcessMinioFacade) ProcessImage(fileName string) {
 
 	var err error

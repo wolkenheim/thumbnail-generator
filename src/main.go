@@ -11,9 +11,10 @@ func main() {
 		panic("Minio init failed")
 	}
 
-	process := &service.ProcessMinioFacade{}
 	minioService := &service.MinioService{}
 	minioService.SetClient(minioClient)
+
+	process := &service.ProcessMinioFacade{}
 	process.SetMinioService(minioService)
 	process.SetFileService(&service.LocalFileService{})
 	process.SetThumbnailGenerator(&service.VipsThumbnailGenerator{})

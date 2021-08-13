@@ -16,7 +16,7 @@ cd _INFRA/dev && docker-compose up -d
 docker exec -it dev_thumbnail-generator_1 bash
 go run .
 ```
-See [branch](https://github.com/wolkenheim/thumbnail-generator/tree/docker-working)
+What we built so far: [branch](https://github.com/wolkenheim/thumbnail-generator/tree/docker-working)
 
 Next step: Add min.io. The easiest way to get started it checking the (GUI)[http://localhost:8080/login]. Create the 
 bucket 
@@ -30,7 +30,7 @@ Now we are finally ready for a test drive. Let´s download an image from min.io 
 simple fetch operation to main.go.
 Run `go run .`
 
-See [branch](https://github.com/wolkenheim/thumbnail-generator/tree/minio-added)
+What we built so far: [branch](https://github.com/wolkenheim/thumbnail-generator/tree/minio-added)
 
 Now we need to talk a bit what is going to happen next. Let´s assume the application knows the name of 
 the image already. These are the steps that need to be performed:
@@ -47,15 +47,34 @@ to be defined, struct written and injected from main.go.
 This took quite a while and quite a bit code changed. It makes sense to see if everything is working. Now the image
 should still be downloaded and end up in the download-images/originals directory.
 
-See [branch](https://github.com/wolkenheim/thumbnail-generator/tree/facade)
+What we built so far: [branch](https://github.com/wolkenheim/thumbnail-generator/tree/facade)
 
 We´re getting closer. Next the wrapper for the thumbnail generator is going to get added. We chose
 [libvips](https://libvips.github.io/libvips/API/current/). I won´t go into detail here but reason for
-that was the great research and benchmarking done here [speedtest-resize](https://github.com/fawick/speedtest-resize). It is possible to crop files in natively in Go, or use a C library with CGO
-or execute a binary. The latter being the most efficient option. One caveat here: when you want to keep
-the option open to use this as an AWS Lambda function this might not be a good choice. In my own use case
-this was different: we control the underlying container image and hence no problem with dependencies.
+that was the great research and benchmarking done here [speedtest-resize](https://github.com/fawick/speedtest-resize). 
+It is possible to crop files in natively in Go, or use a C library with CGO or execute a binary. The latter being the 
+most efficient option. One caveat here: when you want to keep the option open to use this as an AWS Lambda function 
+this might not be a good choice. In my own use case this was different: we control the underlying container image  
+hence there are no problems with external dependencies.
 
 I added the next steps. Thumbnails get generated, uploaded to min.io and both local files deleted.
 
-See [branch](https://github.com/wolkenheim/thumbnail-generator/tree/upload-completed)
+What we built so far: [branch](https://github.com/wolkenheim/thumbnail-generator/tree/upload-completed)
+
+The image processing workflow is now setup. We process just one file so far. On the next step we need a way the 
+application receives the image name to be processed. Several options seem possible: 
+- Mini.io events and an event loop listener via sdk
+- Mini.io webhook that sends data to a http endpoint
+- Sending events from the backend application to a http endpoint
+
+The first option with the mini.io events sounds striking first. There´s a big catch tough. You will lose the ability
+to have multiple replicas of the service. Unlike Consumers in a Consumer Group on an Apache Kafka topic every event
+listener consumes the same events. The service is supposed to live inside a Kubernetes cluster. When scaling up you 
+end up with multiple replicas all producing the same images.
+This is not how scalability should work. So sticking to the http option is probably the best way. You can have multiple
+replicas of your pod and either your kubernetes service for the deployment or Ingress load balancer makes sure the 
+workload is distributed evenly on all pods.
+
+So a web server it is. Let´s build one. What we need is a HandlerFunc that holds all logic which is mainly: parsing and
+validating the JSON request. Call process facade. Send back a response. There needs to be middleware as well to make
+sure the method is POST and the content is JSON.
