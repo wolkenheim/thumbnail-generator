@@ -75,13 +75,14 @@ This is not how scalability should work. So sticking to the http option is proba
 replicas of your pod and either your kubernetes service for the deployment or Ingress load balancer makes sure the 
 workload is distributed evenly on all pods.
 
-So a web server it is. Let´s build one. What we need is a HandlerFunc that holds all logic which is mainly: parsing and
-validating the JSON request. Call process facade. Send back a response. There needs to be middleware as well to make
-sure the method is POST and the content is JSON. All this is basically "how to build a web server from scratch". If 
-you have no clue what is going on here I recommend Alex Edward´s book "Let´s go". This is one of the best introductions
-to web development with Go. The first step is the server in main.go. Here a default router `http.NewServeMux()` is set 
-and routes are added. The application has one route and needs additional liveness and readiness probes for kubernetes.
-The "create" route needs both middlewares we talked about. These are wrappers around the HandlerFunc. 
+So a web server it is. We are going to build one. What we need is a HandlerFunc that holds all logic which is mainly: 
+parsing and validating the JSON request. Call process facade. Send back a response. There needs to be middleware as well 
+to make sure the method is POST and the content is JSON. All this is basically "how to build a web server from scratch". 
+If you have no clue what is going on here I recommend Alex Edward´s book "Let´s go". This is one of the best 
+introductions to web development with Go. The first step is the server in main.go. Here a default router 
+`http.NewServeMux()` is set and routes are added. The application has one route and needs additional liveness and 
+readiness probes for kubernetes. The "create" route needs both middlewares we talked about. These are wrappers around 
+the HandlerFunc. 
 
 The process facade now is getting moved to the controller method. In this setup the request is parsed and the receiver
 immediately receives a response. The actual image processing is done in a Goroutine in the background.
@@ -99,3 +100,7 @@ curl --location --request POST 'localhost:3000/create' \
 ```
 There is also validation added with unique rules. As not all files are image types that can be processed only names
 with certain image extensions are valid payloads for the endpoint. Don´t expect your .doc files to be processed.
+
+What we built so far: [branch](https://github.com/wolkenheim/thumbnail-generator/tree/http-server)
+
+Added a Dockerfile for the final build. `docker build -t go-thumbnails:latest .`

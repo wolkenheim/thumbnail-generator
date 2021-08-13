@@ -9,6 +9,10 @@ RUN apt update \
 
 ENV PATH "$PATH:/usr/local/go/bin"
 
-RUN mkdir /app
-
 WORKDIR /app
+
+COPY ./src /app
+
+RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -a  -o /app/web-server .
+
+ENTRYPOINT ["/app/web-server"]
