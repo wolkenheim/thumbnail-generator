@@ -83,3 +83,19 @@ to web development with Go. The first step is the server in main.go. Here a defa
 and routes are added. The application has one route and needs additional liveness and readiness probes for kubernetes.
 The "create" route needs both middlewares we talked about. These are wrappers around the HandlerFunc. 
 
+The process facade now is getting moved to the controller method. In this setup the request is parsed and the receiver
+immediately receives a response. The actual image processing is done in a Goroutine in the background.
+
+The server runs inside the Docker container. As we opened port 3000 it should be accessible from your host machine. So 
+it can be reached via Curl or Postman. I have one image in my min.io bucket. The app should produce a cropped version of
+that image and upload it to minio in the thumbnails folder.
+
+```
+curl --location --request POST 'localhost:3000/create' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+"fileName": "livia-sAVFADKItCo-unsplash.jpg"
+}'
+```
+There is also validation added with unique rules. As not all files are image types that can be processed only names
+with certain image extensions are valid payloads for the endpoint. Don´t expect your .doc files to be processed.
