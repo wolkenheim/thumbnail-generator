@@ -9,7 +9,7 @@ import (
 )
 
 type CreateController struct {
-	app *app.Application
+	app app.ApplicationInterface
 	process service.ProcessFacade
 	validate CustomValidator
 }

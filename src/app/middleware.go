@@ -14,7 +14,7 @@ func(app *Application) IsPostMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func(app *Application) IsJSON(next http.Handler) http.Handler {
+func(app *Application) IsJSONMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
 
 		contentType := r.Header.Get("Content-Type")

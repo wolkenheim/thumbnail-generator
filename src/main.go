@@ -32,7 +32,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/readiness", a.Liveness)
 	mux.HandleFunc("/liveness", a.Liveness)
-	mux.Handle("/create", a.IsPostMiddleware(a.IsJSON(http.HandlerFunc(c.Create))))
+	mux.Handle("/create", a.IsPostMiddleware(a.IsJSONMiddleware(http.HandlerFunc(c.Create))))
 
 	log.Fatal(http.ListenAndServe(viper.GetString("server.port"), mux))
 

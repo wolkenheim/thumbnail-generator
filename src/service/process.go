@@ -62,10 +62,10 @@ func (p *ProcessMinioFacade) SetMinioService(m *MinioService) {
 	p.imageService = m
 }
 
-func (p *ProcessMinioFacade) SetFileService(f *LocalFileService) {
+func (p *ProcessMinioFacade) SetFileService(f FileService) {
 	p.fileService = f
 }
 
-func (p *ProcessMinioFacade) SetThumbnailGenerator(t *VipsThumbnailGenerator) {
+func (p *ProcessMinioFacade) SetThumbnailGenerator(t ThumbnailGenerator) {
 	p.thumbnailGenerator = t
 }
