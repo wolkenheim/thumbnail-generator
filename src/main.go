@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 	"wolkenheim.cloud/thumbnail-generator/app"
-	"wolkenheim.cloud/thumbnail-generator/controller"
+	"wolkenheim.cloud/thumbnail-generator/handler"
 	"wolkenheim.cloud/thumbnail-generator/service"
 )
 
@@ -19,20 +19,14 @@ func main() {
 	minioService := &service.MinioService{}
 	minioService.SetClient(minioClient)
 
-	process := &service.ProcessMinioFacade{}
-	process.SetMinioService(minioService)
-	process.SetFileService(&service.LocalFileService{})
-	process.SetThumbnailGenerator(&service.VipsThumbnailGenerator{})
+	process := service.NewProcessMinioFacade(minioService,&service.VipsThumbnailGenerator{},&service.LocalFileService{})
 
-	c := controller.CreateController{}
-	c.SetApp(&app.Application{})
-	c.SetProcess(process)
-	c.SetValidator(controller.ValidatorFactory())
+	h := handler.NewCreateController(&app.Application{},process, handler.ValidatorFactory())
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/readiness", a.Liveness)
 	mux.HandleFunc("/liveness", a.Liveness)
-	mux.Handle("/create", a.IsPostMiddleware(a.IsJSONMiddleware(http.HandlerFunc(c.Create))))
+	mux.Handle("/create", a.IsPostMiddleware(a.IsJSONMiddleware(http.HandlerFunc(h.Create))))
 
 	log.Fatal(http.ListenAndServe(viper.GetString("server.port"), mux))
 

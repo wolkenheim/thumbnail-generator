@@ -1,4 +1,4 @@
-package controller
+package handler
 
 import (
 	"encoding/json"
@@ -8,7 +8,7 @@ import (
 	"wolkenheim.cloud/thumbnail-generator/service"
 )
 
-type CreateController struct {
+type CreateHandler struct {
 	app app.ApplicationInterface
 	process service.ProcessFacade
 	validate CustomValidator
@@ -19,7 +19,7 @@ type CreateRequest struct {
 	FileName  string `json:"fileName" validate:"required,allowed-extensions"`
 }
 
-func(c *CreateController) Create(w http.ResponseWriter, r *http.Request){
+func(c *CreateHandler) Create(w http.ResponseWriter, r *http.Request){
 
 	var createRequest CreateRequest
 	err := json.NewDecoder(r.Body).Decode(&createRequest)
@@ -43,14 +43,8 @@ func(c *CreateController) Create(w http.ResponseWriter, r *http.Request){
 	return
 }
 
-func(c *CreateController) SetApp(a *app.Application){
-	c.app = a
-}
-
-func(c *CreateController) SetProcess(p service.ProcessFacade){
-	c.process = p
-}
-
-func(c *CreateController) SetValidator(v CustomValidator){
-	c.validate = v
+func NewCreateController(a *app.Application, p service.ProcessFacade, v CustomValidator) *CreateHandler{
+	return &CreateHandler{
+		a, p, v,
+	}
 }

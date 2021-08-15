@@ -58,14 +58,8 @@ func (p *ProcessMinioFacade) ProcessImage(fileName string) {
 
 }
 
-func (p *ProcessMinioFacade) SetMinioService(m *MinioService) {
-	p.imageService = m
-}
-
-func (p *ProcessMinioFacade) SetFileService(f FileService) {
-	p.fileService = f
-}
-
-func (p *ProcessMinioFacade) SetThumbnailGenerator(t ThumbnailGenerator) {
-	p.thumbnailGenerator = t
+func NewProcessMinioFacade(m *MinioService, t ThumbnailGenerator, f FileService) *ProcessMinioFacade{
+	return &ProcessMinioFacade{
+		m,t,f,
+	}
 }
