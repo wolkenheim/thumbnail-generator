@@ -18,10 +18,6 @@ type MinioService struct{
 	client *minio.Client
 }
 
-func(m *MinioService) SetClient(c *minio.Client){
-	m.client = c
-}
-
 func(m *MinioService) Download(ctx context.Context, minioName string, localFilePath string) error {
 	err := m.client.FGetObject(
 		ctx,
@@ -61,4 +57,8 @@ func(m *MinioService) GetThumbnailPath(minioName string) string {
 func(m *MinioService) GetOriginalPath(minioName string) string {
 	prefix := ""
 	return fmt.Sprintf("%s%s", prefix, minioName)
+}
+
+func NewMinioService(mc *minio.Client) *MinioService {
+	return &MinioService{mc}
 }

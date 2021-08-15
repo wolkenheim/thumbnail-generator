@@ -16,12 +16,10 @@ func main() {
 	}
 
 	a := &app.Application{}
-	minioService := &service.MinioService{}
-	minioService.SetClient(minioClient)
 
+	minioService := service.NewMinioService(minioClient)
 	process := service.NewProcessMinioFacade(minioService,&service.VipsThumbnailGenerator{},&service.LocalFileService{})
-
-	h := handler.NewCreateController(&app.Application{},process, handler.ValidatorFactory())
+	h := handler.NewCreateController(a,process, handler.NewCreateValidator())
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/readiness", a.Liveness)

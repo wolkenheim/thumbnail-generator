@@ -54,6 +54,8 @@ func validateExtensions(fl validator.FieldLevel) bool {
 	return false
 }
 
-func ValidatorFactory() *CreateValidator {
-	return &CreateValidator{ validator.New()}
+func NewCreateValidator() *CreateValidator {
+	validate := validator.New()
+	validate.RegisterValidation("allowed-extensions", validateExtensions)
+	return &CreateValidator{validate}
 }
