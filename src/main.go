@@ -12,13 +12,15 @@ import (
 func main() {
 	minioClient, err := app.MinioClientFactory()
 	if err != nil {
-		panic("Minio init failed")
+		panic("Minio init failed. Cannot start application.")
 	}
 
-	a := &app.Application{}
+	logger := app.NewZapLogger()
+	a := app.NewApplication()
 
 	minioService := service.NewMinioService(minioClient)
-	process := service.NewProcessMinioFacade(minioService,&service.VipsThumbnailGenerator{},&service.LocalFileService{})
+	process := service.NewProcessMinioFacade(minioService,&service.VipsThumbnailGenerator{},
+	service.NewLocalFileService(logger.Sugar()), logger.Sugar())
 	h := handler.NewCreateController(a,process, handler.NewCreateValidator())
 
 	mux := http.NewServeMux()

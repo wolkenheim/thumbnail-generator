@@ -15,3 +15,7 @@ type Application struct {
 func(app *Application) Liveness(w http.ResponseWriter, req *http.Request) {
 	app.JSON(w, http.StatusOK, `{"message":"all good"}`)
 }
+
+func NewApplication() *Application{
+	return &Application{}
+}

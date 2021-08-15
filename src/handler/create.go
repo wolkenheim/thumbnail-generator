@@ -12,9 +12,9 @@ type CreateHandler struct {
 	app app.ApplicationInterface
 	process service.ProcessFacade
 	validate CustomValidator
+
 }
 
-// CreateRequest : describes JSON post body
 type CreateRequest struct {
 	FileName  string `json:"fileName" validate:"required,allowed-extensions"`
 }

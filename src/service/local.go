@@ -13,7 +13,9 @@ type FileService interface{
 	GetLocalThumbnailPath(fileName string) string
 }
 
-type LocalFileService struct {}
+type LocalFileService struct {
+	logger *zap.SugaredLogger
+}
 
 func(d *LocalFileService) DeleteFile(localFilePath string)  {
 	err := os.Remove(localFilePath)
@@ -28,4 +30,8 @@ func(d *LocalFileService) GetLocalOriginalPath(fileName string) string {
 
 func(d *LocalFileService) GetLocalThumbnailPath(fileName string) string {
 	return fmt.Sprintf("%s%s%s", viper.GetString("localImageDir"), "thumbnails/", fileName)
+}
+
+func NewLocalFileService(l *zap.SugaredLogger) *LocalFileService{
+	return &LocalFileService{l}
 }

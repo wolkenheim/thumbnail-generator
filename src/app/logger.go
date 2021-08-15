@@ -7,7 +7,31 @@ import (
 )
 
 func InitLogger() {
+    zapConfig := getCustomLoggerConfig()
+	logger, err := zapConfig.Build()
+	if err != nil {
+		panic(err)
+	}
+	defer logger.Sync()
 
+	zap.ReplaceGlobals (logger)
+
+	// call sugared or regular logger globally with
+	// zap.S().Info("message goes here")
+}
+
+func NewZapLogger() *zap.Logger{
+	zapConfig := getCustomLoggerConfig()
+	logger, err := zapConfig.Build()
+	if err != nil {
+		panic(err)
+	}
+	defer logger.Sync()
+
+	return logger
+}
+
+func getCustomLoggerConfig() zap.Config{
 	jsonInit := []byte(`{"classtype": "application"}`)
 	var initMap map[string]interface{}
 	json.Unmarshal(jsonInit, &initMap)
@@ -20,14 +44,5 @@ func InitLogger() {
 	zapConfig.DisableStacktrace = true
 	zapConfig.InitialFields = initMap
 
-	logger, err := zapConfig.Build()
-	if err != nil {
-		panic(err)
-	}
-	defer logger.Sync()
-
-	zap.ReplaceGlobals (logger)
-
-	// call sugared or regular logger globally with
-	// zap.S().Info("message goes here")
+	return zapConfig
 }

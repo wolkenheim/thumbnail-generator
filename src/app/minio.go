@@ -1,11 +1,9 @@
 package app
 
 import (
-	"github.com/spf13/viper"
-	"go.uber.org/zap"
-
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
+	"github.com/spf13/viper"
 )
 
 
@@ -21,10 +19,5 @@ func MinioClientFactory() (*minio.Client, error) {
 		Secure: useSSL,
 	})
 
-	if err != nil {
-		zap.S().Fatal(err)
-		return nil, err
-	}
-
-	return minioClient, nil
+	return minioClient, err
 }

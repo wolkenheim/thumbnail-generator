@@ -13,6 +13,7 @@ type ProcessMinioFacade struct {
 	imageService ImageService
 	thumbnailGenerator ThumbnailGenerator
 	fileService FileService
+	logger *zap.SugaredLogger
 }
 
 func (p *ProcessMinioFacade) ProcessImage(fileName string) {
@@ -25,7 +26,7 @@ func (p *ProcessMinioFacade) ProcessImage(fileName string) {
 	// 1. download image from minio to local
 	err = p.imageService.Download(ctx, p.imageService.GetOriginalPath(fileName), orgFilePathLocal)
 	if err != nil {
-		zap.S().Errorw(err.Error(),
+		p.logger.Errorw(err.Error(),
 			"fileName", fileName,
 		)
 		return
@@ -35,7 +36,7 @@ func (p *ProcessMinioFacade) ProcessImage(fileName string) {
 	err = p.thumbnailGenerator.Generate(orgFilePathLocal, thumbFilePathLocal)
 	if err != nil {
 		p.fileService.DeleteFile(orgFilePathLocal)
-		zap.S().Errorw(err.Error(),
+		p.logger.Errorw(err.Error(),
 			"fileName", fileName,
 		)
 		return
@@ -46,7 +47,7 @@ func (p *ProcessMinioFacade) ProcessImage(fileName string) {
 	if err != nil {
 		p.fileService.DeleteFile(orgFilePathLocal)
 		p.fileService.DeleteFile(thumbFilePathLocal)
-		zap.S().Errorw(err.Error(),
+		p.logger.Errorw(err.Error(),
 			"fileName", fileName,
 		)
 		return
@@ -58,8 +59,8 @@ func (p *ProcessMinioFacade) ProcessImage(fileName string) {
 
 }
 
-func NewProcessMinioFacade(m *MinioService, t ThumbnailGenerator, f FileService) *ProcessMinioFacade{
+func NewProcessMinioFacade(m *MinioService, t ThumbnailGenerator, f FileService, l *zap.SugaredLogger) *ProcessMinioFacade{
 	return &ProcessMinioFacade{
-		m,t,f,
+		m,t,f, l,
 	}
 }
