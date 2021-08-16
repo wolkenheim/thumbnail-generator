@@ -43,7 +43,7 @@ func(c *CreateHandler) Create(w http.ResponseWriter, r *http.Request){
 	return
 }
 
-func NewCreateController(a *app.Application, p service.ProcessFacade, v CustomValidator) *CreateHandler{
+func NewCreateHandler(a *app.Application, p service.ProcessFacade, v CustomValidator) *CreateHandler{
 	return &CreateHandler{
 		a, p, v,
 	}

@@ -21,12 +21,12 @@ func main() {
 	minioService := service.NewMinioService(minioClient)
 	process := service.NewProcessMinioFacade(minioService,&service.VipsThumbnailGenerator{},
 	service.NewLocalFileService(logger.Sugar()), logger.Sugar())
-	h := handler.NewCreateController(a,process, handler.NewCreateValidator())
+	createHandler := handler.NewCreateHandler(a,process, handler.NewCreateValidator())
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/readiness", a.Liveness)
 	mux.HandleFunc("/liveness", a.Liveness)
-	mux.Handle("/create", a.IsPostMiddleware(a.IsJSONMiddleware(http.HandlerFunc(h.Create))))
+	mux.Handle("/create", a.IsPostMiddleware(a.IsJSONMiddleware(http.HandlerFunc(createHandler.Create))))
 
 	log.Fatal(http.ListenAndServe(viper.GetString("server.port"), mux))
 
