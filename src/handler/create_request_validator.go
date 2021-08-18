@@ -24,10 +24,8 @@ var allowedMap = map[string]string{"jpg": "", "jpeg" :"", "JPG": "", "png": "", 
 
 func(cv *CreateValidator) ValidateStruct(createRequest CreateRequest) []*ValidationErrorResponse {
 	var errors []*ValidationErrorResponse
-	validate := validator.New()
-	validate.RegisterValidation("allowed-extensions", validateExtensions)
 
-	err := validate.Struct(createRequest)
+	err := cv.validate.Struct(createRequest)
 
 	if err != nil {
 		for _, err := range err.(validator.ValidationErrors) {
