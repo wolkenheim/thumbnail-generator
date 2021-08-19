@@ -9,7 +9,7 @@ import (
 func TestLocalFileService(t *testing.T){
 
 	// arrange
-	filename := "../takk/test.jpg"
+	filename := "../tmp/test.jpg"
 
 	var appFs = afero.NewMemMapFs()
 	logger := zaptest.NewLogger(t)
@@ -28,7 +28,7 @@ func TestLocalFileService(t *testing.T){
 	// act. test actual function
 	s.DeleteFile(filename)
 
-	// asser
+	// assert
 	_, fileDoesNotExistErr := appFs.Open(filename)
 	if fileDoesNotExistErr == nil {
 		t.Error("file should be deleted")

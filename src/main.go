@@ -13,7 +13,6 @@ import (
 func main() {
 	var appFs = afero.NewOsFs()
 
-
 	minioClient, err := app.MinioClientFactory()
 	if err != nil {
 		panic("Minio init failed. Cannot start application.")
