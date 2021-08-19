@@ -12,16 +12,18 @@ import (
 
 func main() {
 	var appFs = afero.NewOsFs()
-
+/*
 	minioClient, err := app.MinioClientFactory()
 	if err != nil {
 		panic("Minio init failed. Cannot start application.")
 	}
 
+	*/
 	logger := app.NewZapLogger()
 	a := app.NewApplication()
 
-	minioService := service.NewMinioService(minioClient)
+	//minioService := service.NewMinioService(minioClient)
+	minioService := service.NewAwsService(logger.Sugar(), appFs, service.InitMinioSessionForAWSS3SDK())
 	process := service.NewProcessMinioFacade(minioService,&service.VipsThumbnailGenerator{},
 	service.NewLocalFileService(logger.Sugar(), appFs), logger.Sugar())
 	createHandler := handler.NewCreateHandler(a,process, handler.NewCreateValidator())

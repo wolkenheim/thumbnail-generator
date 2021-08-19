@@ -57,9 +57,11 @@ func (p *ProcessMinioFacade) ProcessImage(fileName string) {
 	p.fileService.DeleteFile(orgFilePathLocal)
 	p.fileService.DeleteFile(thumbFilePathLocal)
 
+	p.logger.Infof("produced file: %s", fileName)
+
 }
 
-func NewProcessMinioFacade(m *MinioService, t ThumbnailGenerator, f FileService, l *zap.SugaredLogger) *ProcessMinioFacade{
+func NewProcessMinioFacade(m ImageService, t ThumbnailGenerator, f FileService, l *zap.SugaredLogger) *ProcessMinioFacade{
 	return &ProcessMinioFacade{
 		m,t,f, l,
 	}

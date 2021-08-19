@@ -94,9 +94,7 @@ that image and upload it to minio in the thumbnails folder.
 ```
 curl --location --request POST 'localhost:3000/create' \
 --header 'Content-Type: application/json' \
---data-raw '{
-"fileName": "livia-sAVFADKItCo-unsplash.jpg"
-}'
+--data-raw '{"fileName": "livia-sAVFADKItCo-unsplash.jpg"}'
 ```
 There is also validation added with unique rules. As not all files are image types that can be processed only names
 with certain image extensions are valid payloads for the endpoint. Don´t expect your .doc files to be processed.
