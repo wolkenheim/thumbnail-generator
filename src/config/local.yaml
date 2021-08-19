@@ -2,7 +2,7 @@ server:
   port: ":3000"
 localImageDir: "/app/downloaded-images/"
 minio:
-  url: docker.for.mac.localhost:9000
+  url: minio:9000
   accessKeyID: thumbnail-gen
   secretAccessKey: 488c6&caaaAC
   useSSL: false
