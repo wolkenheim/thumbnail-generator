@@ -2,9 +2,9 @@ package service
 
 import (
 	"fmt"
+	"github.com/spf13/afero"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
-	"os"
 )
 
 type FileService interface{
@@ -15,10 +15,11 @@ type FileService interface{
 
 type LocalFileService struct {
 	logger *zap.SugaredLogger
+	fs afero.Fs
 }
 
 func(d *LocalFileService) DeleteFile(localFilePath string)  {
-	err := os.Remove(localFilePath)
+	err := d.fs.Remove(localFilePath)
 	if err != nil {
 		zap.S().Errorf("Could not delete local file %s", localFilePath)
 	}
@@ -32,6 +33,6 @@ func(d *LocalFileService) GetLocalThumbnailPath(fileName string) string {
 	return fmt.Sprintf("%s%s%s", viper.GetString("localImageDir"), "thumbnails/", fileName)
 }
 
-func NewLocalFileService(l *zap.SugaredLogger) *LocalFileService{
-	return &LocalFileService{l}
+func NewLocalFileService(l *zap.SugaredLogger, fs afero.Fs) *LocalFileService{
+	return &LocalFileService{l, fs}
 }

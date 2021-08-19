@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/spf13/afero"
 	"github.com/spf13/viper"
 	"log"
 	"net/http"
@@ -10,6 +11,9 @@ import (
 )
 
 func main() {
+	var appFs = afero.NewOsFs()
+
+
 	minioClient, err := app.MinioClientFactory()
 	if err != nil {
 		panic("Minio init failed. Cannot start application.")
@@ -20,7 +24,7 @@ func main() {
 
 	minioService := service.NewMinioService(minioClient)
 	process := service.NewProcessMinioFacade(minioService,&service.VipsThumbnailGenerator{},
-	service.NewLocalFileService(logger.Sugar()), logger.Sugar())
+	service.NewLocalFileService(logger.Sugar(), appFs), logger.Sugar())
 	createHandler := handler.NewCreateHandler(a,process, handler.NewCreateValidator())
 
 	mux := http.NewServeMux()
